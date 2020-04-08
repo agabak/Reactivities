@@ -15,26 +15,29 @@ interface IProps {
     createActivity: (activity: IActivity) => void;
     editActivity: (activity: IActivity) => void;
     deleteActivity: (id:string) => void;
+    submitting: boolean;
 }
 
 const ActivityDashboard: React.FC<IProps> = ({activities, selectActivity, 
                                               selectedActivity, editMode,
                                              setEditMode, setSelectedActivity,
-                                             createActivity, editActivity, deleteActivity }) => {
+                                             createActivity, editActivity, deleteActivity, submitting }) => {
   return (
     <Grid>
       <Grid.Column width={10}>
-       <ActivityList  activities = {activities} selectActivity = {selectActivity} deleteActivity = {deleteActivity} />
+       <ActivityList  activities = {activities} selectActivity = {selectActivity} deleteActivity = {deleteActivity}   submitting = {submitting}/>
       </Grid.Column>
       <Grid.Column width={6}>
        { selectedActivity && !editMode && <ActivityDetails  activity = {selectedActivity}  
                                                             setEditMode = {setEditMode}  
-                                                            setSelectedActivity = {setSelectedActivity}/> }
+                                                            setSelectedActivity = {setSelectedActivity}
+                                                           /> }
        { editMode &&  <ActivityForm  key={selectedActivity?.id || 0}
        setEditMode ={setEditMode} 
        activity = {selectedActivity} 
        createActivity = {createActivity}
-       editActivity = {editActivity} /> }
+       editActivity = {editActivity}
+       submitting = {submitting} /> }
       </Grid.Column>
     </Grid>
   );
