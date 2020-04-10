@@ -24,7 +24,7 @@ const ActivityList: React.FC<IProps> = ({ activities, selectActivity, deleteActi
                 </div>
               </Item.Description>
               <Item.Extra>
-                <Button   loading = {submitting}
+                <Button 
                       onClick= {() => selectActivity(activity.id)} 
                       floated="right" 
                       content="View" 
