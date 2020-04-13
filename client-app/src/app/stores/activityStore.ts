@@ -6,6 +6,7 @@ import agent from '../api/agent';
 
 
 class ActivityStore {
+    @observable activityRegister = new Map();
     @observable activities: IActivity[] = [];
     @observable selectedActivity: IActivity | undefined = undefined;
     @observable loadingInitial = false;
@@ -13,7 +14,8 @@ class ActivityStore {
     @observable submitting = false;
 
     @computed get activitiesByDate() {
-      return    this.activities.sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
+     // return    this.activities.sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
+     return Array.from(this.activityRegister.values()).sort((a,b) => Date.parse(a.date) - Date.parse(b.date));
     }
 
     @action loadActivities = async () => {
@@ -23,7 +25,8 @@ class ActivityStore {
          const  activities  = await  agent.Activities.list()  
            activities.forEach((activity) => {
              activity.date = activity.date.split('.')[0]
-             this.activities.push(activity);
+             ///this.activities.push(activity);
+             this.activityRegister.set(activity.id, activity);
            })
         }
         catch(error){
@@ -34,7 +37,7 @@ class ActivityStore {
     }
 
     @action selectActivity = (id: string) => {
-        this.selectedActivity = this.activities.find(a => a.id === id);
+        this.selectedActivity =  this.activityRegister.get(id)  // this.activities.find(a => a.id === id);
         this.editMode = false;
     } 
 
@@ -44,7 +47,8 @@ class ActivityStore {
       try {
         
        await  agent.Activities.create(activity);
-       this.activities.push(activity);
+       //this.activities.push(activity);
+       this.activityRegister.set(activity.id, activity);
        this.editMode = false;
        this.submitting = false;
       } catch (error) {
@@ -57,6 +61,35 @@ class ActivityStore {
     @action  openCreateForm = () => {
       this.editMode = true;
       this.selectedActivity = undefined;
+    }
+
+    @action  editActivity = async (activity:IActivity) => {
+       this.submitting = true;
+       try {
+           await agent.Activities.update(activity);
+           this.activityRegister.set(activity.id, activity);
+           this.selectedActivity = activity;
+           this.editMode = false;
+           this.submitting = false;
+         
+       } catch (error) {
+         console.log(error);
+         this.submitting = false;
+       }
+
+    }
+
+    @action openEditForm = (id: string) => {
+      this.selectedActivity = this.activityRegister.get(id);
+      this.editMode = true;
+    }
+
+    @action cancelSelectedActivity = () => {
+      this.selectedActivity  = undefined;
+    }
+
+    @action cancelFormOpen = () => {
+      this.editMode = false;
     }
 }
 
