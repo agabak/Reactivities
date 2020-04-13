@@ -14,28 +14,10 @@ const App = () => {
   const [selectedActivity, setSelectedActivity] = useState<IActivity | null >(null);
 
   const [editMode, setEditMode] = useState(false)
-  const [loading, setLoding] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [target, setTarget] = useState('');
 
-  const handleSelectedActivity = (id: string) => {
-    activityStore.selectActivity(id);
-    setEditMode(false);
-  }
 
-  const handleOpenCreateForm = () => {
-    setSelectedActivity(null);
-    setEditMode(true);
-  }
-
-  const handleCreateActivity = (activity: IActivity) => {
-    setSubmitting(true)
-    agent.Activities.create(activity).then(() => {
-      setActivities([...activities, activity]);
-      setSelectedActivity(activity);
-      setEditMode(false); 
-    }).then(() => setSubmitting(false));
-  }
 
   const handleEditActivity = (activity: IActivity) => {
     setSubmitting(true);
@@ -62,13 +44,12 @@ const App = () => {
   if(activityStore.loadingInitial)  return <LoaderComponent content = {'Loading activities...'} />
   return (
     <Fragment>
-      <NavBar  openCreateForm = {handleOpenCreateForm} />
+      <NavBar />
       <Container style={{ marginTop: "7em" }}>
-        <ActivityDashboard  activities = {activityStore.activities}  
-                            selectActivity ={handleSelectedActivity}  
+        <ActivityDashboard  
+                            
                             setEditMode = {setEditMode}  
                             setSelectedActivity = {setSelectedActivity}
-                            createActivity = {handleCreateActivity}
                             editActivity = {handleEditActivity} 
                             deleteActivity = {handleDeleteActivity} 
                             submitting ={submitting}
