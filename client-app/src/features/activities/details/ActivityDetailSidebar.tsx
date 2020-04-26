@@ -50,7 +50,6 @@ const ActivityDetailSidebar: React.FC = () => {
               <Item.Header as="h3">
                 <Link to={"#"}>Eric</Link>
               </Item.Header>
-              <Item.Extra style={{ color: "orange" }}>Following</Item.Extra>
             </Item.Content>
           </Item>
         </List>
