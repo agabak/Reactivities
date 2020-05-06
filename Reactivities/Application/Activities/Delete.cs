@@ -30,6 +30,8 @@ namespace Application.Activities
             {
                 var deleteObject = await _context.Activities.FindAsync(request.Id);
 
+                if (deleteObject == null) throw new Exception("Could not find activity");
+
                 if (!request.Id.Equals(deleteObject.Id)) throw new Exception("wrong activity");
 
                 _context.Activities.Remove(deleteObject);
