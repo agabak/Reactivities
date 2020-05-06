@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Middleware;
+using API.Middleware.Filters;
 using Application.Activities;
 using FluentValidation.AspNetCore;
 using Infrastructure.Ioc;
@@ -34,7 +36,11 @@ namespace API
         {
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("ReactivitiesConnection")));
 
-            services.AddControllers().AddFluentValidation(cfg =>
+            services.AddControllers(opt => 
+            {
+                opt.Filters.Add(new HttpResponseExceptionFilter());
+            })
+            .AddFluentValidation(cfg =>
             {
                 cfg.RegisterValidatorsFromAssemblyContaining<Create>();
             });
@@ -60,6 +66,8 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
