@@ -34,7 +34,7 @@ namespace Application.Activities
 
                 if (deleteObject == null) throw new RestException(HttpStatusCode.NotFound,new { activity= "Could not find activity" });
 
-                if (!request.Id.Equals(deleteObject.Id)) throw new RestException(HttpStatusCode.NotFound, new {activity = "wrong activity" });
+                if (!request.Id.Equals(deleteObject.Id)) throw new RestException(HttpStatusCode.BadRequest, new {activity = "wrong activity" });
 
                 _context.Activities.Remove(deleteObject);
 
@@ -42,7 +42,7 @@ namespace Application.Activities
 
                 if (success) return Unit.Value;
 
-                throw new RestException(HttpStatusCode.BadRequest, new {activity = "Enable to delete activity" });
+                throw new Exception("Enable to delete activity" );
             }
         }
     }
