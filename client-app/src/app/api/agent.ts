@@ -1,7 +1,26 @@
 import  axios, { AxiosResponse } from 'axios';
 import { IActivity } from '../Models/activity.model';
+import { history } from '../../index'
+import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'https://localhost:44316/api';
+
+axios.interceptors.response.use(undefined, error=> {
+    if(error.message ==='Network Error' && !error.response){
+       toast.error('Network Error');
+    }
+    const {status, data, config} = error.response;
+    if(status === 404) {
+        history.push('/notfound');
+    }
+    if(status === 400 && config.method ==='get' 
+                      && data.errors.hasOwnProperty('id')){
+        history.push('/notfound');
+    }
+    if(status === 500){
+        toast.error('server error-check with your admin');
+    }
+});
 
 const responseBody = (response: AxiosResponse) => response.data;
 
