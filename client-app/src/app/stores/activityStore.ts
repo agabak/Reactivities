@@ -44,10 +44,9 @@ class ActivityStore {
           runInAction('loading activities error',() => {
             this.loadingInitial = false;
           })
-          console.log(error);
         }
     }
-
+    
     @action loadActivity = async(id: string) => {
        let activity = this.getActivity(id);
        if(activity) {
